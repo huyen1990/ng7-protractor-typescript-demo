@@ -7,5 +7,12 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "projects": {}
+  "projects": {
+    "p4d": {
+      "tags": []
+    },
+    "p4d-e2e": {
+      "tags": []
+    }
+  }
 }
