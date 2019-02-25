@@ -92,6 +92,8 @@ describe('Select Slot Feature', () => {
 
     expect(page.getEmailErrorText()).toEqual('Your Email: invalid email');
 
+
+    //1////
     // check more than 61 characters
     page
       .getNameInput()
