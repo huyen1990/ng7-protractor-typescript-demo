@@ -1,19 +1,19 @@
-// import { SelectSlot } from '../support/select-slot.po';
-import * as page from '../support/select-slot.po';
+import { SelectSlot } from '../support/select-slot.po';
 // import { browser, logging, element, by } from 'protractor';
+
+// declare var require;
 // const fs = require('fs');
 
 describe('Select Slot Feature', () => {
-  // let page: SelectSlot;
+  let page: SelectSlot;
 
-  beforeEach(
-    () => cy.visit('https://yyy.pick4d.us' + '/select')
-
+  beforeEach(() => {
+    // HACK:
     // https://stackoverflow.com/questions/46527912/protractor-scripttimeouterror-asynchronous-script-timeout-result-was-not-rec
-    // browser.waitForAngularEnabled(false);
     // browser.ignoreSynchronization = true;
-    // page = new SelectSlot();
-  );
+    // browser.waitForAngularEnabled(false);
+    page = new SelectSlot();
+  });
 
   it('should work for deliverable #1 smoke test', () => {
     //   We want to use ng e2e (protractor) to automate the test of our Angular (7) application.
@@ -28,109 +28,113 @@ describe('Select Slot Feature', () => {
 
     // Initial Test script:
     // - go to url
-    // page.navigateTo();
+    page.navigateTo();
 
-    // browser.wait(element(by.id('week')).getWebElement(), 5000);
     // HACK:
-    // browser.sleep(4000);
+    // browser.sleep(5000);
 
-    // // - make sure you are on the Select page (via h2) and url /select
-    // expect(page.getSelectSlotLinkAriaSelectedValue()).eq('true');
+    // - make sure you are on the Select page (via h2) and url /select
+    page.h2Text.should('contain', 'Please select a time slot');
     cy.url().should('contain', '/select');
-    cy.get('#nav-select').should('have.attr', 'aria-selected', 'true');
-    cy.get('h2').should('contain', 'Please select a time slot');
+    page.selectSlotLinkAriaSelectedValue.should('eq', 'true');
 
-    // // - validate #headingTitle, #headingSubtitle
-    // expect(page.getHeadingTitleText).eq('Accorto Call');
-    cy.get('#headingTitle').contains('Accorto Call');
-    // expect(page.getHeadingSubtitleText).eq(
-    //   'Pick a good time for you'
-    // );
-    cy.get('#headingSubtitle').contains('Pick a good time for you');
+    // - validate #headingTitle, #headingSubtitle
+    cy.wait(2000);
+    page.headingTitleText.should('eq', 'Accorto Call');
+    page.headingSubtitleText.should('eq', 'Pick a good time for you');
 
-    // // -- ultimately the values will differ based on url
-    // // - get the first .timeSlot - get the id and remember the text in the time element
-    // page.getFirstTimeSlotText.then(timeElementText => {
-    cy.get('.timeSlot').then(timeElementText => {
-      //   console.log('timeElementText:', timeElementText);
-      console.log('timeElementText', timeElementText.text());
-      //   // - change the timezone to Europe/Moscow
-      //   page.changeTimeZoneTo().then(() => {
-      cy.get('#tzIdClear').click();
-      // cy.get('.timeSlot').select('tzItem-420');
-      cy.get('#tzItem-420').click();
-      //     // - get the first .timeSlot by id and make sure the text in the time element is different
-      //     expect(page.getFirstTimeSlotText).not.eq(timeElementText);
-      cy.get('.timeSlot').should('not.have.text', timeElementText.text());
-      //   });
-      // });
+    // -- ultimately the values will differ based on url
+
+    // - get the first .timeSlot - get the id and remember the text in the time element
+    page.firstTimeSlotText.then(timeElementText => {
+      console.log('timeElementText:', timeElementText);
+
+      // - change the timezone to Europe/Moscow
+      page.changeTimeZoneTo('Europe/Moscow').then(() => {
+        // - get the first .timeSlot by id and make sure the text in the time element is different
+        page.firstTimeSlotText.should('not.eq', timeElementText);
+      });
     });
 
-    // // - remember the text of #dateInfo
-    // page.getDateInfoText.then(dateInfoText => {
-    cy.get('#dateInfo').then(dateInfoElement => {
-      //   console.log('dateInfoText:', dateInfoText);
-      const dateInfoText1 = dateInfoElement.text();
-      //   // - click on #next twice
-      //   page.clickNext();
-      //   page.clickNext();
-      cy.get('#next').click();
-      cy.get('#next').click();
+    // - remember the text of #dateInfo
+    page.dateInfoText.then(dateInfoText => {
+      console.log('dateInfoText:', dateInfoText);
 
-      //   // - compare the #dateInfo - should be different
-      //   expect(page.getDateInfoText).not.eq(dateInfoText);
-      cy.get('#dateInfo').should('not.have.text', dateInfoText1);
+      // - click on #next twice
+      page.clickNext();
+      page.clickNext();
+
+      // - compare the #dateInfo - should be different
+      page.dateInfoText.should('not.eq', dateInfoText);
     });
-    // });
 
-    // // - (create a screenshot)
-    // // browser.takeScreenshot().then((png) => {
-    // // writeScreenShot(png, './apps/p4d-e2e/screenshots/test-case-001.png');
-    // // });
-    // cy.screenshot(`./apps/p4d-cy-e2e/screenshots/test-case-001.png`);
-    // cy.screenshot(`test-case-002`);
+    // - (create a screenshot)
+    cy.screenshot('./apps/p4d-cy-e2e/screenshots/test-case-001.png');
 
-    // // - click on the first .timeSlot
-    cy.get('.timeSlot').first().click();
-    // // - make sure that you are on the Confirm page via h2 and url /confirm/...
+    // - click on the first .timeSlot
+    // browser.sleep(4000);
+    page.timeSlot.first().click();
+
+    // - make sure that you are on the Confirm page via h2 and url /confirm/...
+    page.h2Text.should('contain', 'Please Confirm');
     cy.url().should('contain', '/confirm');
-    cy.get('#nav-confirm').should('have.attr', 'aria-selected', 'true');
-    cy.get('h2').should('contain', 'Please Confirm');
+    page.confirmLinkAriaSelectedValue.should('eq', 'true');
 
-    // // - make sure that you cannot click confirm (should be ready then)
-    cy.get('#_save').should('be.disabled');
-    cy.get(`[name='providedEmail']`).type('huyen@kj.');
-    cy.contains('Your Email: invalid email');
-    cy.get('#_save').should('be.disabled');
+    // - make sure that you cannot click confirm (should be ready then)
+    page.confirmButton.should('not.be.enabled');
 
-    // // - filling in form (should be ready then) and clicking confirm
-    cy.get(`[name='providedEmail']`).type('com');
-    cy.get('#_save').should('be.enabled');
+    page.emailInput.type('user@test.');
+    page.confirmButton.should('not.be.enabled');
 
-    cy.get('#_save').click();
+    page.emailErrorText.should('contains', 'Your Email: invalid email');
 
+    // check more than 61 characters
+    page.nameInput.type(
+      '1234567890123456789012345678901234567890123456789012345678901'
+    );
+    page.confirmButton.should('not.be.enabled');
 
-    // // Note:
-    // // - all elements should have id's or unique h1/h2/.., no need to do complex by... or so -- if not, we'll create it
+    page.nameErrorText.should(
+      'contain',
+      'Your Name: requiredLength: 60 actualLength: 61'
+    );
 
-    // // Deliverable #2
-    // // - we want to create screenshots but comparing them is far too complex due to the dynamic nature
-    // // - crossbrowsertesting - screenshot - using Selenium Script - after pressing next twice
-    // // - the Selenium script should be stand alone
+    // - filling in form (should be ready then) and clicking confirm
+    page.emailInput.type('com');
+    page.nameInput.clear();
+    page.nameInput.type('John Doe');
+    page.confirmButton.should('be.enabled');
+
+    page.confirmButton.click();
+
+    // browser.sleep(2000);
+
+    cy.url().should('contain', '/manage');
+    page.manageLinkAriaSelectedValue.should('eq', 'true');
+
+    // browser.sleep(2000);
+
+    // Note:
+    // - all elements should have id's or unique h1/h2/.., no need to do complex by... or so -- if not, we'll create it
+
+    // Deliverable #2
+    // - we want to create screenshots but comparing them is far too complex due to the dynamic nature
+    // - crossbrowsertesting - screenshot - using Selenium Script - after pressing next twice
+    // - the Selenium script should be stand alone
   });
 
-  // afterEach(async () => {
-  //   // Assert that there are no errors emitted from the browser
-  //   const logs = await browser
-  //     .manage()
-  //     .logs()
-  //     .get(logging.Type.BROWSER);
-  //   expect(logs).not.toContain(
-  //     jasmine.objectContaining({
-  //       level: logging.Level.SEVERE
-  //     })
-  //   );
-  // });
+  afterEach(async () => {
+    // Assert that there are no errors emitted from the browser
+    // const logs = await browser
+    //   .manage()
+    //   .logs()
+    //   .get(logging.Type.BROWSER);
+    // expect(logs).not.toContain(
+    //   jasmine.objectContaining({
+    //     level: logging.Level.SEVERE
+    //   })
+    // );
+  });
 });
 
 // function writeScreenShot(data, filename) {
