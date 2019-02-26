@@ -40,7 +40,7 @@ describe('Select Slot Feature', () => {
 
     // - validate #headingTitle, #headingSubtitle
     expect(page.getHeadingTitleText()).toEqual('Accorto Call');
-    expect(page.getHeadingSubtitleTextText()).toEqual(
+    expect(page.getHeadingSubtitleText()).toEqual(
       'Pick a good time for you'
     );
 
@@ -51,7 +51,7 @@ describe('Select Slot Feature', () => {
       console.log('timeElementText:', timeElementText);
 
       // - change the timezone to Europe/Moscow
-      page.changeTimeZoneTo().then(() => {
+      page.changeTimeZoneTo('Europe/Moscow').then(() => {
         // - get the first .timeSlot by id and make sure the text in the time element is different
         expect(page.getFirstTimeSlotText()).not.toEqual(timeElementText);
       });
@@ -71,8 +71,7 @@ describe('Select Slot Feature', () => {
 
     // - (create a screenshot)
     browser.takeScreenshot().then(png => {
-      //writeScreenShot(png, './e2e/screenshots/test-case-001.png');
-      writeScreenShot(png, './apps/p4d-e2e/screenshots/test-case-001.png');
+      writeScreenShot(png, './e2e/screenshots/test-case-001.png');
     });
 
     // - click on the first .timeSlot
@@ -92,8 +91,6 @@ describe('Select Slot Feature', () => {
 
     expect(page.getEmailErrorText()).toEqual('Your Email: invalid email');
 
-
-    //1////
     // check more than 61 characters
     page
       .getNameInput()

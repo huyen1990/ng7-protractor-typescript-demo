@@ -1,4 +1,5 @@
 import { browser, by, element } from 'protractor';
+import { protractor } from 'protractor/built/ptor';
 
 export const selectors = {
   dateInfo: '#dateInfo',
@@ -8,29 +9,18 @@ export const selectors = {
   emailInput: '#f_provided_email',
   firstTimeSlot: '.timeSlot',
   h2: 'h2',
-  headingSubtitleTextText: '#headingSubtitle',
+  headingSubtitleText: '#headingSubtitle',
   headingTitleText: '#headingTitle',
   manageLink: '#nav-manage',
   nameErrorText: '#f_provided_name-error',
   nameInput: '#f_provided_name',
   next: '#next',
   selectSlotLink: '#nav-select',
-  tzIdClear: '#tzIdClear'
+  tzIdClear: '#tzIdClear',
+  tzSearchInput: '#tzSearch'
 };
 
 export class SelectSlot {
-  changeTimeZoneTo(timeZoneId: string = 'tzItem-420') {
-    return element(by.css(selectors.tzIdClear))
-      .click()
-      .then(result => {
-        element(by.id(timeZoneId)).click();
-      }) as Promise<void>;
-  }
-
-  clickNext() {
-    return element(by.css(selectors.next)).click() as Promise<void>;
-  }
-
   getConfirmButton() {
     return element(by.css(selectors.confirmButton));
   }
@@ -39,6 +29,10 @@ export class SelectSlot {
     return element(by.css(selectors.confirmLink)).getAttribute(
       'aria-selected'
     ) as Promise<string>;
+  }
+
+  getDateInfoText() {
+    return element(by.css(selectors.dateInfo)).getText() as Promise<string>;
   }
 
   getEmailErrorText() {
@@ -65,10 +59,10 @@ export class SelectSlot {
     >;
   }
 
-  getHeadingSubtitleTextText() {
-    return element(
-      by.css(selectors.headingSubtitleTextText)
-    ).getText() as Promise<string>;
+  getHeadingSubtitleText() {
+    return element(by.css(selectors.headingSubtitleText)).getText() as Promise<
+      string
+    >;
   }
 
   getNameErrorText() {
@@ -93,18 +87,25 @@ export class SelectSlot {
     ) as Promise<string>;
   }
 
-  //via h2
   getH2Text() {
     return element(by.css(selectors.h2)).getText() as Promise<string>;
+  }
+
+  changeTimeZoneTo(timeZoneText: string) {
+    return element(by.css(selectors.tzIdClear))
+      .click()
+      .then(result => {
+        element(by.css(selectors.tzSearchInput)).sendKeys(timeZoneText + protractor.Key.ENTER);
+      }) as Promise<void>;
+  }
+
+  clickNext() {
+    return element(by.css(selectors.next)).click() as Promise<void>;
   }
 
   navigateTo() {
     // HACK: use baseUrl
     return browser.get('https://yyy.pick4d.us' + '/select') as Promise<any>;
-  }
-
-  getDateInfoText() {
-    return element(by.css(selectors.dateInfo)).getText() as Promise<string>;
   }
 
   getFakeText(length: number) {

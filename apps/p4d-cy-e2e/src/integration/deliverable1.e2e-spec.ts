@@ -39,7 +39,7 @@ describe('Select Slot Feature', () => {
     page.selectSlotLinkAriaSelectedValue.should('eq', 'true');
 
     // - validate #headingTitle, #headingSubtitle
-    cy.wait(2000);
+    cy.wait(2000); // needs to update from Pick 4D
     page.headingTitleText.should('eq', 'Accorto Call');
     page.headingSubtitleText.should('eq', 'Pick a good time for you');
 
