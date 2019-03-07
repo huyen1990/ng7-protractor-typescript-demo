@@ -1,8 +1,9 @@
 import { SelectSlot } from './select-slot.po';
-import { browser, logging, element, by } from 'protractor';
+import { browser, logging } from 'protractor';
 
 declare var require;
 const fs = require('fs');
+const rootE2ePath = './apps/p4d-e2e';
 
 describe('Select Slot Feature', () => {
   let page: SelectSlot;
@@ -34,31 +35,29 @@ describe('Select Slot Feature', () => {
     browser.sleep(5000);
 
     // - make sure you are on the Select page (via h2) and url /select
-    expect(page.getH2Text()).toEqual('Please select a time slot');
+    expect(page.h2Text).toEqual('Please select a time slot');
     expect(browser.getCurrentUrl()).toContain('/select');
-    expect(page.getSelectSlotLinkAriaSelectedValue()).toEqual('true');
+    expect(page.selectSlotLinkAriaSelectedValue).toEqual('true');
 
     // - validate #headingTitle, #headingSubtitle
-    expect(page.getHeadingTitleText()).toEqual('Accorto Call');
-    expect(page.getHeadingSubtitleText()).toEqual(
-      'Pick a good time for you'
-    );
+    expect(page.headingTitleText).toEqual('Accorto Call');
+    expect(page.headingSubtitleText).toEqual('Pick a good time for you');
 
     // -- ultimately the values will differ based on url
 
     // - get the first .timeSlot - get the id and remember the text in the time element
-    page.getFirstTimeSlotText().then(timeElementText => {
+    page.firstTimeSlotText.then(timeElementText => {
       console.log('timeElementText:', timeElementText);
 
       // - change the timezone to Europe/Moscow
       page.changeTimeZoneTo('Europe/Moscow').then(() => {
         // - get the first .timeSlot by id and make sure the text in the time element is different
-        expect(page.getFirstTimeSlotText()).not.toEqual(timeElementText);
+        expect(page.firstTimeSlotText).not.toEqual(timeElementText);
       });
     });
 
     // - remember the text of #dateInfo
-    page.getDateInfoText().then(dateInfoText => {
+    page.dateInfoText.then(dateInfoText => {
       console.log('dateInfoText:', dateInfoText);
 
       // - click on #next twice
@@ -66,57 +65,55 @@ describe('Select Slot Feature', () => {
       page.clickNext();
 
       // - compare the #dateInfo - should be different
-      expect(page.getDateInfoText()).not.toEqual(dateInfoText);
+      expect(page.dateInfoText).not.toEqual(dateInfoText);
     });
 
     // - (create a screenshot)
     browser.takeScreenshot().then(png => {
-      writeScreenShot(png, './e2e/screenshots/test-case-001.png');
+      writeScreenShot(png, rootE2ePath + '/screenshots/test-case-001.png');
     });
 
     // - click on the first .timeSlot
     browser.sleep(4000);
-    page.getFirstTimeSlot().click();
+    page.firstTimeSlot.click();
 
     // - make sure that you are on the Confirm page via h2 and url /confirm/...
-    expect(page.getH2Text()).toEqual('Please Confirm');
+    expect(page.h2Text).toEqual('Please Confirm');
     expect(browser.getCurrentUrl()).toContain('/confirm');
-    expect(page.getConfirmLinkAriaSelectedValue()).toEqual('true');
+    expect(page.confirmLinkAriaSelectedValue).toEqual('true');
 
     // - make sure that you cannot click confirm (should be ready then)
-    expect(page.getConfirmButton().isEnabled()).toBeFalsy();
+    expect(page.confirmButton.isEnabled()).toBeFalsy();
 
-    page.getEmailInput().sendKeys('user@test.');
-    expect(page.getConfirmButton().isEnabled()).toBeFalsy();
+    page.emailInput.sendKeys('user@test.');
+    expect(page.confirmButton.isEnabled()).toBeFalsy();
 
-    expect(page.getEmailErrorText()).toEqual('Your Email: invalid email');
+    expect(page.emailErrorText).toEqual('Your Email: invalid email');
 
     // check more than 61 characters
-    page
-      .getNameInput()
-      .sendKeys(
-        '1234567890123456789012345678901234567890123456789012345678901'
-      );
-    expect(page.getConfirmButton().isEnabled()).toBeFalsy();
+    page.nameInput.sendKeys(
+      '1234567890123456789012345678901234567890123456789012345678901'
+    );
+    expect(page.confirmButton.isEnabled()).toBeFalsy();
 
-    expect(page.getNameErrorText()).toEqual(
+    expect(page.nameErrorText).toEqual(
       'Your Name: requiredLength: 60 actualLength: 61'
     );
 
     // - filling in form (should be ready then) and clicking confirm
-    page.getEmailInput().sendKeys('com');
-    page.getNameInput().clear();
-    page.getNameInput().sendKeys('John Doe');
-    expect(page.getConfirmButton().isEnabled()).toBeTruthy();
+    page.emailInput.sendKeys('com');
+    page.nameInput.clear();
+    page.nameInput.sendKeys('John Doe');
+    expect(page.confirmButton.isEnabled()).toBeTruthy();
 
-    page.getConfirmButton().click();
+    page.confirmButton.click();
 
     browser.sleep(2000);
 
     expect(browser.getCurrentUrl()).toContain('/manage');
-    expect(page.getManageLinkAriaSelectedValue()).toEqual('true');
+    expect(page.manageLinkAriaSelectedValue).toEqual('true');
 
-    browser.sleep(2000);
+    browser.sleep(1000);
 
     // Note:
     // - all elements should have id's or unique h1/h2/.., no need to do complex by... or so -- if not, we'll create it

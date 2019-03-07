@@ -1,5 +1,5 @@
-import { browser, by, element } from 'protractor';
-import { protractor } from 'protractor/built/ptor';
+import { browser, by, element, protractor } from 'protractor';
+
 
 export const selectors = {
   dateInfo: '#dateInfo',
@@ -21,81 +21,75 @@ export const selectors = {
 };
 
 export class SelectSlot {
-  getConfirmButton() {
+  // fields
+
+  // properties
+  get h2Text() {
+    return element(by.css(selectors.h2)).getText();
+  }
+
+  get confirmButton() {
     return element(by.css(selectors.confirmButton));
   }
 
-  getConfirmLinkAriaSelectedValue(): any {
-    return element(by.css(selectors.confirmLink)).getAttribute(
-      'aria-selected'
-    ) as Promise<string>;
+  get confirmLinkAriaSelectedValue() {
+    return element(by.css(selectors.confirmLink)).getAttribute('aria-selected');
   }
 
-  getDateInfoText() {
-    return element(by.css(selectors.dateInfo)).getText() as Promise<string>;
+  get dateInfoText() {
+    return element(by.css(selectors.dateInfo)).getText();
   }
 
-  getEmailErrorText() {
-    return element(by.css(selectors.emailErrorText)).getText() as Promise<
-      string
-    >;
+  get emailErrorText() {
+    return element(by.css(selectors.emailErrorText)).getText();
   }
 
-  getEmailInput(): any {
+  get emailInput() {
     return element(by.css(selectors.emailInput));
   }
 
-  getFirstTimeSlot() {
+  get firstTimeSlot() {
     return element(by.css(selectors.firstTimeSlot));
   }
 
-  getFirstTimeSlotText() {
-    return this.getFirstTimeSlot().getText() as Promise<string>;
+  get firstTimeSlotText() {
+    return this.firstTimeSlot.getText();
   }
 
-  getHeadingTitleText() {
-    return element(by.css(selectors.headingTitleText)).getText() as Promise<
-      string
-    >;
+  get headingTitleText() {
+    return element(by.css(selectors.headingTitleText)).getText();
   }
 
-  getHeadingSubtitleText() {
-    return element(by.css(selectors.headingSubtitleText)).getText() as Promise<
-      string
-    >;
+  get headingSubtitleText() {
+    return element(by.css(selectors.headingSubtitleText)).getText();
   }
 
-  getNameErrorText() {
-    return element(by.css(selectors.nameErrorText)).getText() as Promise<
-      string
-    >;
+  get nameErrorText() {
+    return element(by.css(selectors.nameErrorText)).getText();
   }
 
-  getManageLinkAriaSelectedValue(): any {
-    return element(by.css(selectors.manageLink)).getAttribute(
-      'aria-selected'
-    ) as Promise<string>;
+  get manageLinkAriaSelectedValue() {
+    return element(by.css(selectors.manageLink)).getAttribute('aria-selected');
   }
 
-  getNameInput() {
+  get nameInput() {
     return element(by.css(selectors.nameInput));
   }
 
-  getSelectSlotLinkAriaSelectedValue() {
+  get selectSlotLinkAriaSelectedValue() {
     return element(by.css(selectors.selectSlotLink)).getAttribute(
       'aria-selected'
-    ) as Promise<string>;
+    );
   }
 
-  getH2Text() {
-    return element(by.css(selectors.h2)).getText() as Promise<string>;
-  }
-
+  // functions/methods
   changeTimeZoneTo(timeZoneText: string) {
     return element(by.css(selectors.tzIdClear))
       .click()
       .then(result => {
-        element(by.css(selectors.tzSearchInput)).sendKeys(timeZoneText + protractor.Key.ENTER);
+        element(by.css(selectors.tzSearchInput)).sendKeys(
+          timeZoneText + protractor.Key.ENTER
+        );
       }) as Promise<void>;
   }
 
